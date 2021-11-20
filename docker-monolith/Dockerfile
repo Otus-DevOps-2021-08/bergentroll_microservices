@@ -1,4 +1,6 @@
 FROM ubuntu:18.04
+LABEL Version=0.0.0
+LABEL NAME=OTUS_Reddit
 ENV REDDIT_DIR='/srv/reddit/'
 
 RUN apt-get update
@@ -15,4 +17,4 @@ RUN cd "$REDDIT_DIR" && rm Gemfile.lock && bundle install
 CMD ["/usr/local/bin/start.sh"]
 
 # Cleanup
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* && gem cleanup all

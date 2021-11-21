@@ -12,7 +12,12 @@ COPY mongod.conf /etc/mongod.conf
 COPY db_config "${REDDIT_DIR}/db_config"
 COPY start.sh /usr/local/bin/start.sh
 
-RUN cd "$REDDIT_DIR" && rm Gemfile.lock && bundle install
+RUN cd "$REDDIT_DIR" && \
+  rm Gemfile.lock && \
+  bundle install && \
+# Workaround for dependency version
+  gem install mongo --version '>2' \
+;
 
 CMD ["/usr/local/bin/start.sh"]
 

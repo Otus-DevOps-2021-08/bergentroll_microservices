@@ -39,7 +39,10 @@ resource "yandex_compute_instance" "monolith" {
   }
 
   boot_disk {
-    initialize_params { image_id = data.yandex_compute_image.choosen.id }
+    initialize_params {
+      image_id = data.yandex_compute_image.choosen.id
+      size = 8
+    }
   }
 
   network_interface {

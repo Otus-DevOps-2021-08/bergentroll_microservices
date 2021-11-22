@@ -1,9 +1,6 @@
-output "external_ip_address" {
+output "external_ip_addresses" {
   description = "Assigned instance IPv4 address"
-  value = {
-    for i in yandex_compute_instance.monolith :
-    i.name => i.network_interface[0].nat_ip_address
-  }
+  value = local.address_book
 }
 
 output "image_name" {
@@ -12,5 +9,5 @@ output "image_name" {
 }
 
 output "compute_instance_ids" {
-  value = tolist(yandex_compute_instance.monolith[*].id)
+  value = yandex_compute_instance.monolith[*].id
 }

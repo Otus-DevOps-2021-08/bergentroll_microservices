@@ -26,4 +26,6 @@ variable "disk_image_family" { default = "ubuntu-1804-lts" }
 
 variable "subnet_name" {}
 
-variable "name_prefix" { default = "" }
+variable "inventory_output_dir" {
+  description = "Directory to put generated Ansible inventory file"
+}

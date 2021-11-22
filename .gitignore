@@ -1,4 +1,7 @@
+*.backup
+*.tfstate
+*.tfvars
 .terraform*
 00_terraform.tf
-*.tfvars
+inventory.json
 key.json

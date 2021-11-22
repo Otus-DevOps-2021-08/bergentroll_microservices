@@ -1,0 +1,15 @@
+{
+  "monolith": {
+    "hosts": {
+      "reddit-monolith-0": {
+        "ansible_host": "50.250.0.1"
+      },
+      "reddit-monolith-1": {
+        "ansible_host": "50.250.0.2"
+      },
+      "reddit-monolith-2": {
+        "ansible_host": "50.250.0.3"
+      }
+    }
+  }
+}

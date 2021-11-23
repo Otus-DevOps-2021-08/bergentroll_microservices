@@ -22,7 +22,7 @@ variable "private_key_path" {
   description = "Path to the private key used for SSH access"
 }
 
-variable "disk_image_family" { default = "ubuntu-1804-lts" }
+variable "disk_image_family" { default = "docker" }
 
 variable "subnet_name" {}
 

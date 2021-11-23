@@ -15,7 +15,7 @@ locals {
 
 data "yandex_compute_image" "choosen" {
   family    = var.disk_image_family
-  folder_id = "standard-images"
+  folder_id = var.folder_id
 }
 
 data "yandex_vpc_subnet" "choosen" {
@@ -41,7 +41,7 @@ resource "yandex_compute_instance" "monolith" {
   boot_disk {
     initialize_params {
       image_id = data.yandex_compute_image.choosen.id
-      size = 8
+      size = 10
     }
   }
 
@@ -62,6 +62,7 @@ resource "null_resource" "deploy" {
     private_key = file(var.private_key_path)
   }
 }
+
 resource "local_file" "inventory_json" {
   content = "${jsonencode(
     {

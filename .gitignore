@@ -5,3 +5,4 @@
 00_terraform.tf
 inventory.json
 key.json
+variables.json

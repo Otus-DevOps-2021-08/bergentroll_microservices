@@ -20,6 +20,7 @@ packer build -var-file=variables.json docker.json
 popd 
 
 pushd docker-monolith/infra/terraform/
+# Terraform requires variables, see terraform.tfvars.example
 terraform apply
 popd 
 

@@ -21,7 +21,7 @@ popd
 
 pushd docker-monolith/infra/terraform/
 # Terraform requires variables, see terraform.tfvars.example
-terraform apply
+terraform apply -auto-approve
 popd 
 
 pushd docker-monolith/infra/ansible/

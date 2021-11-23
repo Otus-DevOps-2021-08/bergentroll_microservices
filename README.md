@@ -10,4 +10,21 @@ Issues:
 - There is some Ruby dependencies trouble: bundler installs old unsupported
   mongo lib
 
-What is done: branch is meeting homework requirements.
+What is done: branch is meeting homework requirements including 🌟.
+
+How to use ifrastructure declaration:
+```bash
+pushd docker-monolith/infra/packer/
+# You may create variables file from variables.json.example
+packer build -var-file=variables.json docker.json
+popd 
+
+pushd docker-monolith/infra/terraform/
+terraform apply
+popd 
+
+pushd docker-monolith/infra/ansible/
+# Inventory populates with terrafrom apply
+ansible-playbook monolith.yml --tags app
+popd 
+```

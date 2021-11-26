@@ -1,0 +1,25 @@
+---
+
+- name: Formation of monolith
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Install Docker
+      tags: docker
+      package:
+        name:
+          - docker.io
+          - python3-docker
+        state: present
+        update_cache: true  # To prevent dpkg front lockfile error
+    - name: Run image
+      tags: app
+      docker_container:
+        name: reddit
+        exposed_ports: 9292
+        published_ports: '0.0.0.0:9292:9292'
+        restart: true
+        recreate: true
+        restart_policy: always
+        image: 'bergentroll/otus-reddit:1.0'

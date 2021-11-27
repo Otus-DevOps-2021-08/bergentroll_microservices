@@ -18,7 +18,6 @@ RUN \
   apt-get update && \
   apt-get install --no-install-recommends --yes $build_deps && \
   bundle install && \
-  gem cleanup all && \
   apt-get remove --purge --auto-remove --yes $build_deps && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/*

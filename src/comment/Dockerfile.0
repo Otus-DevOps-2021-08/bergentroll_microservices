@@ -1,0 +1,18 @@
+FROM ruby:2.2-alpine
+LABEL name="Otus Reddit comment service"
+LABEL version="1.1"
+ARG build_deps="make gcc libc-dev"
+ENV APP_HOME "/srv/app/"
+ENV COMMENT_DATABASE_HOST comment_db
+ENV COMMENT_DATABASE comments
+
+WORKDIR $APP_HOME
+CMD ["puma"]
+
+COPY . $APP_HOME/
+
+# hadolint ignore=DL3018,SC2086
+RUN \
+  apk --no-cache --update add $build_deps && \
+  bundle install && \
+  apk del $build_deps

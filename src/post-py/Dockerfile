@@ -11,6 +11,7 @@ ENTRYPOINT ["python3", "post_app.py"]
 COPY . $APP_HOME
 
 # hadolint ignore=DL3018
-RUN apk --no-cache --update add build-base && \
-    pip install --no-cache-dir --requirement requirements.txt && \
-    apk del build-base
+RUN \
+ apk --no-cache --update add build-base && \
+ pip install --no-cache-dir --requirement requirements.txt && \
+ apk del build-base

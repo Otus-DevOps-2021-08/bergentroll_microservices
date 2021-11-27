@@ -29,3 +29,12 @@ pushd docker-monolith/infra/ansible/
 ansible-playbook monolith.yml --tags app
 popd 
 ```
+
+## docker-3
+
+As it seems for me useful hours have been spent.
+
+Optimized dockerfiles created for microservice installation. Dockerfile.0 files
+provides Alpine-based Ruby environment.
+
+Sabbe sattā bhavantu sukhi-tattā!

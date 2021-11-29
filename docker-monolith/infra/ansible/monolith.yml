@@ -22,4 +22,4 @@
         restart: true
         recreate: true
         restart_policy: always
-        image: 'bergentroll/otus-reddit:1.0'
+        image: 'bergentroll/otus-reddit:1.1'

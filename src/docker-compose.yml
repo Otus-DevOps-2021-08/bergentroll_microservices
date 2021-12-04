@@ -12,14 +12,14 @@ services:
     build:
       context: ./ui/
       dockerfile: Dockerfile.0
-    image: ${USERNAME}/ui:latest
+    image: '${USERNAME}/ui:${APP_TAG}'
     ports:
-      - 9292:9292/tcp
+      - '${APP_PORT}:9292/tcp'
     networks:
       - frontend
   post:
     build: ./post-py/
-    image: ${USERNAME}/post:latest
+    image: '${USERNAME}/post:${APP_TAG}'
     networks:
       - backend
       - frontend
@@ -27,13 +27,13 @@ services:
     build:
       context: ./comment/
       dockerfile: Dockerfile.0
-    image: ${USERNAME}/comment:latest
+    image: '${USERNAME}/comment:${APP_TAG}'
     networks:
       - backend
       - frontend
 
 volumes:
-  post_db:
+  post_db: {}
 
 networks:
   frontend:

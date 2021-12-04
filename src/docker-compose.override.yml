@@ -1,0 +1,12 @@
+---
+
+services:
+  ui:
+    volumes:
+      - './ui/:${APP_HOME}/'
+  post:
+    volumes:
+      - './post-py/:${APP_HOME}/'
+  comment:
+    volumes:
+      - './comment/:${APP_HOME}/'

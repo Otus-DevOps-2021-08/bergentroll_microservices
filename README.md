@@ -38,3 +38,15 @@ Optimized dockerfiles created for microservice installation. Dockerfile.0 files
 provides Alpine-based Ruby environment.
 
 Sabbe sattā bhavantu sukhi-tattā!
+
+## gitlab-ci-1
+
+To set up GitLab server:
+- Go into `docker-monolith/infra/packer/`, prepare `variables.json` and build
+  an image with `packer build -var-file=variables.json docker.json` command.
+- Go into `docker-monolith/infra/terraform/`, prepare `terraform.tfvars` and
+  create an instance with command `terraform apply -auto-approve`. Be sure to
+  properly set the variables, `inventory_output_dir` should point to
+  `../../gitlab-ci/ansible/`.
+- Go into `gitlab-ci/ansible/` and apply the playbook with command
+  `ansible-playbook gitlab.yml`.

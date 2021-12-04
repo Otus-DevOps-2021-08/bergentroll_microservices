@@ -1,0 +1,57 @@
+---
+
+- name: Set up GitLab instance
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - debug:
+        var: '{{ item }}'
+      tags: debug
+      with_items:
+        - inventory_hostname
+        - ansible_host
+        - ansible_default_ipv4
+    - name: Install Docker
+      tags: docker
+      package:
+        name:
+          - docker.io
+          - python3-docker
+        state: present
+        update_cache: true  # To prevent dpkg front lockfile error
+    - name: Create dirs
+      tags: gitlab
+      file:
+        path: '/srv/gitlab/{{ item }}/'
+        recurse: true
+        state: directory
+      with_items:
+        - config
+        - data
+        - logs
+    - name: Run GitLab
+      tags: gitlab
+      docker_container:
+        name: gitlab
+        hostname: 'gitlab.example.com'
+        image: 'gitlab/gitlab-ce:latest'
+        restart: true
+        recreate: true
+        restart_policy: always
+        env:
+          GITLAB_OMNIBUS_CONFIG: |
+            external_url 'http://{{ ansible_host }}'
+        ports:
+          - '80:80'
+          - '443:443'
+          - '2222:22'
+        volumes:
+          - '/srv/gitlab/config:/etc/gitlab'
+          - '/srv/gitlab/logs:/var/log/gitlab'
+          - '/srv/gitlab/data:/var/opt/gitlab'
+    - debug:
+        msg: 'Instance accessible on http://{{ ansible_host }}'
+      tags:
+        - debug
+        - gitlab

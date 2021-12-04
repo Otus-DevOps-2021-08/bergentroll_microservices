@@ -31,6 +31,12 @@ variable "memory" {
   default     = 1
 }
 
+variable "disk_size" {
+  description = "Storage size in GB"
+  type        = number
+  default     = 10
+}
+
 variable "preemptible" {
   description = "Allow the cloud to interrupt an instance"
   type        = bool

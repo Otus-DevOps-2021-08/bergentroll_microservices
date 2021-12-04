@@ -7,7 +7,7 @@ services:
     volumes:
       - post_db:/data/db
     networks:
-      - reddit
+      - backend
   ui:
     build:
       context: ./ui/
@@ -16,22 +16,31 @@ services:
     ports:
       - 9292:9292/tcp
     networks:
-      - reddit
+      - frontend
   post:
     build: ./post-py/
     image: ${USERNAME}/post:latest
     networks:
-      - reddit
+      - backend
+      - frontend
   comment:
     build:
       context: ./comment/
       dockerfile: Dockerfile.0
     image: ${USERNAME}/comment:latest
     networks:
-      - reddit
+      - backend
+      - frontend
 
 volumes:
   post_db:
 
 networks:
-  reddit:
+  frontend:
+    ipam:
+      config:
+        - subnet: 10.0.1.0/24
+  backend:
+    ipam:
+      config:
+        - subnet: 10.0.2.0/24

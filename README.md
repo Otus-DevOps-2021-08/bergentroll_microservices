@@ -38,3 +38,14 @@ Optimized dockerfiles created for microservice installation. Dockerfile.0 files
 provides Alpine-based Ruby environment.
 
 Sabbe sattā bhavantu sukhi-tattā!
+
+## docker-4
+
+Docker Compose adds so-called project name as a prefix for entries it owns. By
+default it seems the last directory in the `$PWD`. It may be overrided with
+`COMPOSE_PROJECT_NAME` environment variable e.g. in env-file.
+
+What is done: Docker Compose file with override file.
+
+Appiyehi sampayogo dukkho piyehi vippayogo dukkho yampicchaṃ na labhati
+tam·pi dukkhaṃ saṃkhittena pañc·upādāna·kkhandhā dukkhā.

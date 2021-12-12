@@ -84,3 +84,5 @@ test_unit_job:
     - mongo:latest
   script:
     - ruby simpletest.rb
+
+# TEST WORKAROUND cd reddit

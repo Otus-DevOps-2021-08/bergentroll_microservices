@@ -33,7 +33,7 @@ variables:
 
 before_script:
   - cp simpletest.rb reddit/
-  - echo 'gem rack-test' >> reddit/Gemfile
+  - echo "gem 'rack-test'" >> reddit/Gemfile
   - pushd reddit/
   - bundle install
 

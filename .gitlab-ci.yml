@@ -68,11 +68,12 @@ production:
 variables:
   DATABASE_URL: 'mongodb://mongo/user_posts'
   GIT_SUBMODULE_STRATEGY: recursive
+  APP_DIR: 'reddit-module/'
 
 before_script:
-  - cp simpletest.rb reddit/
-  - echo "gem 'rack-test'" >> reddit/Gemfile
-  - pushd reddit/
+  - cp simpletest.rb "$APP_DIR"
+  - echo "gem 'rack-test'" >> "$APP_DIR/Gemfile"
+  - pushd "$APP_DIR"
   - bundle install
 
 ---

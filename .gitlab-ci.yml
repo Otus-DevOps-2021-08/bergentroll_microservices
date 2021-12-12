@@ -1,5 +1,7 @@
 ---
 
+image: ruby:2.4.2
+
 stages:
   - build
   - test
@@ -24,3 +26,22 @@ deploy_job:
   stage: deploy
   script:
     - echo 'Deploy'
+
+variables:
+  DATABASE_URL: 'mongodb://mongo/user_posts'
+  GIT_SUBMODULE_STRATEGY: recursive
+
+before_script:
+  - cp simpletest.rb reddit/
+  - echo 'gem rack-test' >> reddit/Gemfile
+  - pushd reddit/
+  - bundle install
+
+---
+
+test_unit_job:
+  stage: test
+  services:
+    - mongo:latest
+  script:
+    - ruby simpletest.rb

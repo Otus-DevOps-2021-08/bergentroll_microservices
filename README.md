@@ -56,3 +56,6 @@ GitLab Runner is also setting up, but without registration.
 > TODO: Use GitLab API to register runner programmatically
 
 `reddit/` dir had been added as a Git submodule.
+
+[Links to Slack channel with
+notifications](https://devops-team-otus.slack.com/archives/C02GPEREZRR).

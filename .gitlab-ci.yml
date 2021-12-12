@@ -85,4 +85,4 @@ test_unit_job:
   script:
     - ruby simpletest.rb
 
-# TEST WORKAROUND cd reddit
+# TEST WORKAROUND - cd reddit

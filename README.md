@@ -17,17 +17,17 @@ How to use ifrastructure declaration:
 pushd docker-monolith/infra/packer/
 # You may create variables file from variables.json.example
 packer build -var-file=variables.json docker.json
-popd 
+popd
 
 pushd docker-monolith/infra/terraform/
 # Terraform requires variables, see terraform.tfvars.example
 terraform apply -auto-approve
-popd 
+popd
 
 pushd docker-monolith/infra/ansible/
 # Inventory populates with terrafrom apply
 ansible-playbook monolith.yml --tags app
-popd 
+popd
 ```
 
 ## docker-3
@@ -50,3 +50,9 @@ To set up GitLab server:
   `../../gitlab-ci/ansible/`.
 - Go into `gitlab-ci/ansible/` and apply the playbook with command
   `ansible-playbook gitlab.yml`.
+
+GitLab Runner is also setting up, but without registration.
+
+> TODO: Use GitLab API to register runner programmatically
+
+`reddit/` dir had been added as a Git submodule.

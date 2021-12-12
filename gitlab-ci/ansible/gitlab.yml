@@ -47,9 +47,23 @@
           - '443:443'
           - '2222:22'
         volumes:
-          - '/srv/gitlab/config:/etc/gitlab'
-          - '/srv/gitlab/logs:/var/log/gitlab'
-          - '/srv/gitlab/data:/var/opt/gitlab'
+          - '/srv/gitlab/config/:/etc/gitlab/'
+          - '/srv/gitlab/logs/:/var/log/gitlab/'
+          - '/srv/gitlab/data/:/var/opt/gitlab/'
+    - name: Run GitLab Runner
+      tags: gitlab
+      docker_container:
+        name: gitlab-runner
+        hostname: 'gitlab-runner.example.com'
+        image: 'gitlab/gitlab-runner:latest'
+        restart: true
+        recreate: true
+        restart_policy: always
+        env: {}
+        ports: []
+        volumes:
+          - '/srv/gitlab-runner/config/:/etc/gitlab-runner/'
+          - '/var/run/docker.sock:/var/run/docker.sock'
     - debug:
         msg: 'Instance accessible on http://{{ ansible_host }}'
       tags:

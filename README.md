@@ -58,4 +58,4 @@ GitLab Runner is also setting up, but without registration.
 `reddit/` dir had been added as a Git submodule.
 
 [Links to Slack channel with
-notifications](https://devops-team-otus.slack.com/archives/C02GPEREZRR).
+notifications](slack://channel?idC02GPEREZRR=&team=T6HR0TUP3).

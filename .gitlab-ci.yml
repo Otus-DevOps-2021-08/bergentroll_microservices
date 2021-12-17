@@ -4,7 +4,8 @@
 # Attribution to Tsvetan Nikolov for build and deployment logic
 # https://blog.itelekt.com/build-deploy-run-docker-image-with-gitlab/
 
-image: ruby:2.4.2
+default:
+  image: ruby:2.4.2
 
 stages:
   - build
@@ -16,8 +17,13 @@ stages:
 build_job:
   stage: build
   image: docker:20.10
+  services:
+    - docker:20.10-dind
   before_script:
-    - docker login -u "$CI_DOCKER_REGISTRY_USER" -p "$CI_DOCKER_REGISTRY_TOKEN"
+    - docker login
+      -u "$CI_DOCKER_REGISTRY_USER"
+      -p "$CI_DOCKER_REGISTRY_TOKEN"
+      docker.io
   script:
     - docker build
       --pull -f ./gitlab-ci/Dockerfile -t "$IMAGE_SPEC" .
@@ -36,19 +42,32 @@ test_integration_job:
 branch review:
   stage: review
   image: docker:20.10
-  variables:
-    DOCKER_HOST: $CI_DOCKER_HOST_URI
+  services:
+    - docker:20.10-dind
   before_script:
+    - mkdir -p ~/.ssh/
+    - echo "StrictHostKeyChecking no" >> ~/.ssh/config
     - chown 600 "$CI_DOCKER_HOST_ID_RSA_FILE"
+    - eval $(ssh-agent -s)
     - ssh-add "$CI_DOCKER_HOST_ID_RSA_FILE"
-    - docker login -u "$CI_DOCKER_REGISTRY_USER" -p "$CI_DOCKER_REGISTRY_TOKEN"
+    - docker login
+      -u "$CI_DOCKER_REGISTRY_USER"
+      -p "$CI_DOCKER_REGISTRY_TOKEN"
+      docker.io
   # TODO Should parametrize outer port to avoid conflicts
   script:
+    - export DOCKER_HOST="$CI_DOCKER_HOST_URI"
     - docker pull "$IMAGE_SPEC"
-    - docker run --name "$CI_COMMIT_REF_NAME" -d -p 9292:9292 "$IMAGE_SPEC"
+    - docker stop "$CONTAINER_NAME" || true
+    - docker rm "$CONTAINER_NAME" || true
+    - docker run
+      --name "$CONTAINER_NAME" --restart always
+      -d -p 9292:9292 "$IMAGE_SPEC"
   environment:
     name: "branch/$CI_COMMIT_REF_NAME"
     url: "http://${CI_ENVIRONMENT_SLUG}.${GITLAB_SERVER_HOST}"
+  variables:
+    CONTAINER_NAME: reddit
   only:
     - branches
   except: []
@@ -87,13 +106,7 @@ variables:
   DATABASE_URL: 'mongodb://mongo/user_posts'
   GIT_SUBMODULE_STRATEGY: recursive
   APP_DIR: 'reddit-module/'
-  IMAGE_SPEC: 'gitlab-ci-reddit:latest'
-
-before_script:
-  - cp gitlab-ci/simpletest.rb "$APP_DIR"
-  - echo "gem 'rack-test'" >> "$APP_DIR/Gemfile"
-  - pushd "$APP_DIR"
-  - bundle install
+  IMAGE_SPEC: 'bergentroll/gitlab-ci-reddit:latest'
 
 ...
 ---
@@ -102,6 +115,11 @@ test_unit_job:
   stage: test
   services:
     - mongo:latest
+  before_script:
+    - cp gitlab-ci/simpletest.rb "$APP_DIR"
+    - echo "gem 'rack-test'" >> "$APP_DIR/Gemfile"
+    - pushd "$APP_DIR"
+    - bundle install
   script:
     - ruby simpletest.rb
 

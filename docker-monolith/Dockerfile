@@ -1,5 +1,5 @@
 FROM ubuntu:18.04
-LABEL version="1.1"
+LABEL version="0.1"
 LABEL name="Otus Reddit"
 ENV REDDIT_DIR='/srv/reddit/'
 

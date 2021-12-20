@@ -1,4 +1,6 @@
-docker-compose.yml
+# TODO Not sure may it be disabled
+#docker-compose.yml
+.env
 build_info.txt
 prometheus/
 

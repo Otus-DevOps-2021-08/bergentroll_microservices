@@ -1,0 +1,3 @@
+[submodule "reddit-module"]
+	path = reddit-module
+	url = https://github.com/express42/reddit.git

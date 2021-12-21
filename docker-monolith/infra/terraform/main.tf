@@ -24,7 +24,7 @@ data "yandex_vpc_subnet" "choosen" {
 
 resource "yandex_compute_instance" "monolith" {
   count                     = var.instance_num
-  name                      = "reddit-monolith-${count.index}"
+  name                      = "${var.instance_prefix}-${count.index}"
   platform_id               = "standard-v2"
   allow_stopping_for_update = true
 
@@ -34,14 +34,18 @@ resource "yandex_compute_instance" "monolith" {
 
   resources {
     cores         = 2
-    core_fraction = 5
-    memory        = 1
+    core_fraction = var.core_fraction
+    memory        = var.memory
+  }
+
+  scheduling_policy {
+    preemptible = var.preemptible
   }
 
   boot_disk {
     initialize_params {
       image_id = data.yandex_compute_image.choosen.id
-      size = 10
+      size     = var.disk_size
     }
   }
 

@@ -8,10 +8,39 @@ variable "service_account_key_file" {
   description = "YC secrets JSON file"
 }
 
+variable "instance_prefix" {
+  description = "Name of instances"
+  default     = "reddit-monolith"
+}
+
 variable "instance_num" {
   description = "Amount of application hosts"
   type        = number
   default     = 1
+}
+
+variable "core_fraction" {
+  description = "Assured vCPU time percent"
+  type        = number
+  default     = 5
+}
+
+variable "memory" {
+  description = "RAM amount for an instance in GB"
+  type        = number
+  default     = 1
+}
+
+variable "disk_size" {
+  description = "Storage size in GB"
+  type        = number
+  default     = 10
+}
+
+variable "preemptible" {
+  description = "Allow the cloud to interrupt an instance"
+  type        = bool
+  default     = false
 }
 
 variable "public_key_path" {

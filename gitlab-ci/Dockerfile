@@ -1,8 +1,8 @@
 FROM ubuntu:18.04
-LABEL version="0.1"
-LABEL name="Otus Reddit"
-ENV REDDIT_DIR='/srv/reddit/'
+LABEL version="0.1.0"
+LABEL name="Otus Reddit monolith edition"
 
+ARG DEBIAN_FRONTEND='noninteractive'
 # hadolint ignore=DL3008
 RUN \
   apt-get update && \
@@ -11,14 +11,17 @@ RUN \
   apt-get clean && rm -rf /var/lib/apt/lists/*
 # hadolint ignore=DL3028
 RUN gem install bundler && gem cleanup all
-RUN git clone -b monolith https://github.com/express42/reddit.git "$REDDIT_DIR"
 
+ENV REDDIT_DIR='/srv/reddit/'
+ARG REDDIT_SRC='reddit-module/'
+COPY "$REDDIT_SRC" "$REDDIT_DIR"
 WORKDIR $REDDIT_DIR
 
-COPY mongod.conf /etc/mongod.conf
-COPY db_config "db_config"
-COPY start.sh /usr/local/bin/start.sh
-
+ARG CONF_SRC='docker-monolith/'
+COPY "${CONF_SRC}/mongod.conf" /etc/mongod.conf
+COPY "${CONF_SRC}/db_config" "./db_config"
+COPY "${CONF_SRC}/start.sh" /usr/local/bin/start.sh
+#
 RUN \
   rm Gemfile.lock && \
   bundle install && \
@@ -27,5 +30,3 @@ RUN \
   gem cleanup all
 
 CMD ["/usr/local/bin/start.sh"]
-
-# FIXME: Cleanup should go into respective RUN

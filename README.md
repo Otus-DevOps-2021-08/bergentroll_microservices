@@ -17,17 +17,17 @@ How to use ifrastructure declaration:
 pushd docker-monolith/infra/packer/
 # You may create variables file from variables.json.example
 packer build -var-file=variables.json docker.json
-popd 
+popd
 
 pushd docker-monolith/infra/terraform/
 # Terraform requires variables, see terraform.tfvars.example
 terraform apply -auto-approve
-popd 
+popd
 
 pushd docker-monolith/infra/ansible/
 # Inventory populates with terrafrom apply
 ansible-playbook monolith.yml --tags app
-popd 
+popd
 ```
 
 ## docker-3
@@ -49,3 +49,24 @@ What is done: Docker Compose file with override file.
 
 Appiyehi sampayogo dukkho piyehi vippayogo dukkho yampicchaṃ na labhati
 tam·pi dukkhaṃ saṃkhittena pañc·upādāna·kkhandhā dukkhā.
+
+## gitlab-ci-1
+
+To set up GitLab server:
+- Go into `docker-monolith/infra/packer/`, prepare `variables.json` and build
+  an image with `packer build -var-file=variables.json docker.json` command.
+- Go into `docker-monolith/infra/terraform/`, prepare `terraform.tfvars` and
+  create an instance with command `terraform apply -auto-approve`. Be sure to
+  properly set the variables, `inventory_output_dir` should point to
+  `../../gitlab-ci/ansible/`.
+- Go into `gitlab-ci/ansible/` and apply the playbook with command
+  `ansible-playbook gitlab.yml`.
+
+GitLab Runner is also setting up, but without registration.
+
+> TODO: Use GitLab API to register runner programmatically
+
+`reddit/` dir had been added as a Git submodule.
+
+[Links to Slack channel with
+notifications](slack://channel?idC02GPEREZRR=&team=T6HR0TUP3).

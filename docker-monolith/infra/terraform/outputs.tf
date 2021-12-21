@@ -1,6 +1,6 @@
 output "external_ip_addresses" {
   description = "Assigned instance IPv4 address"
-  value = local.address_book
+  value       = local.address_book
 }
 
 output "image_name" {

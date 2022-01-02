@@ -65,6 +65,12 @@ services:
       - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
     networks:
       - monitoring
+  mongodb-exporter:
+    image: percona/mongodb_exporter:0.30
+    command:
+      - '--mongodb.uri=mongodb://post_db:27017'
+    networks:
+      - backend
 
 volumes:
   post_db: {}

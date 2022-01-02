@@ -70,3 +70,7 @@ GitLab Runner is also setting up, but without registration.
 
 [Links to Slack channel with
 notifications](slack://channel?idC02GPEREZRR=&team=T6HR0TUP3).
+
+## monitoring-1
+
+[Docker Hub link](https://hub.docker.com/u/bergentroll).

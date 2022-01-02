@@ -38,6 +38,7 @@ services:
       - frontend
   prometheus:
     image: '${USERNAME}/prometheus:latest'
+    build: ../monitoring/prometheus/
     restart: always
     ports:
       - '9090:9090'
@@ -50,6 +51,20 @@ services:
     networks:
       - backend
       - frontend
+      - monitoring
+  node-exporter:
+    image: prom/node-exporter:v0.15.2
+    user: root
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
+    networks:
+      - monitoring
 
 volumes:
   post_db: {}
@@ -64,3 +79,7 @@ networks:
     ipam:
       config:
         - subnet: 10.0.2.0/24
+  monitoring:
+    ipam:
+      config:
+        - subnet: 10.0.3.0/24

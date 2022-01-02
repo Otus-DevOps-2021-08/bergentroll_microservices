@@ -5,35 +5,40 @@ version: '3.3'
 services:
   post_db:
     image: mongo:3.2
+    restart: always
     volumes:
       - post_db:/data/db
     networks:
       - backend
   ui:
     build:
-      context: ./ui/
+      context: ../src/ui/
       dockerfile: Dockerfile.0
     image: '${USERNAME}/ui:${APP_TAG}'
+    restart: always
     ports:
       - '${APP_PORT}:9292/tcp'
     networks:
       - frontend
   post:
-    build: ./post-py/
+    build: ./../src/post-py/
     image: '${USERNAME}/post:${APP_TAG}'
+    restart: always
     networks:
       - backend
       - frontend
   comment:
     build:
-      context: ./comment/
+      context: ../src/comment/
       dockerfile: Dockerfile.0
     image: '${USERNAME}/comment:${APP_TAG}'
+    restart: always
     networks:
       - backend
       - frontend
   prometheus:
     image: '${USERNAME}/prometheus:latest'
+    restart: always
     ports:
       - '9090:9090'
     volumes:

@@ -2,28 +2,31 @@
 
 version: '3.3'
 
+x-defaults: &defaults
+  restart: always
+
 services:
   post_db:
+    <<: *defaults
     image: mongo:3.2
-    restart: always
     volumes:
       - post_db:/data/db
     networks:
       - backend
   ui:
+    <<: *defaults
     build:
       context: ../src/ui/
       dockerfile: Dockerfile.0
     image: '${USERNAME}/ui:${APP_TAG}'
-    restart: always
     ports:
       - '${APP_PORT}:9292/tcp'
     networks:
       - frontend
   post:
+    <<: *defaults
     build: ../src/post-py/
     image: '${USERNAME}/post:${APP_TAG}'
-    restart: always
     networks:
       - backend
       - frontend
@@ -33,18 +36,18 @@ services:
         fluentd-address: 'localhost:24224'
         tag: service.post
   comment:
+    <<: *defaults
     build:
       context: ../src/comment/
       dockerfile: Dockerfile.0
     image: '${USERNAME}/comment:${APP_TAG}'
-    restart: always
     networks:
       - backend
       - frontend
   prometheus:
+    <<: *defaults
     image: '${USERNAME}/prometheus:latest'
     build: ../monitoring/prometheus/
-    restart: always
     ports:
       - '9090:9090'
     volumes:
@@ -58,9 +61,9 @@ services:
       - frontend
       - monitoring
   node-exporter:
+    <<: *defaults
     image: prom/node-exporter:v0.15.2
     user: root
-    restart: always
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
@@ -72,15 +75,15 @@ services:
     networks:
       - monitoring
   mongodb-exporter:
+    <<: *defaults
     image: percona/mongodb_exporter:0.30
-    restart: always
     command:
       - '--mongodb.uri=mongodb://post_db:27017'
     networks:
       - backend
   blackbox-exporter:
+    <<: *defaults
     image: 'prom/blackbox-exporter:v0.19.0'
-    restart: always
     networks:
       - backend
       - frontend

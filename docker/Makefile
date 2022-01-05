@@ -1,8 +1,11 @@
 define build_image
-docker build $(dir $<) --tag $(username)/$@:latest
+docker build $(dir $<) --tag $(username)/$@:$(tag)
 endef
 
 username = bergentroll
+tag = latest
+
+# Supposed to not to be overrided
 images = ui comment post prometheus
 
 .PHONY: all $(MAKECMDGOALS)
@@ -24,7 +27,7 @@ prometheus: ../monitoring/prometheus/Dockerfile
 	$(build_image)
 
 push: $(images)
-	$(foreach img,$?,docker push $(username)/$(img):latest;)
+	$(foreach img,$?,docker push $(username)/$(img):$(tag);)
 
 clean:
-	$(foreach img,$(images),docker image rm --force $(username)/$(img):latest;)
+	$(foreach img,$(images),docker image rm --force $(username)/$(img):$(tag);)

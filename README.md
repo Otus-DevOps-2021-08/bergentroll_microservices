@@ -73,4 +73,6 @@ notifications](slack://channel?idC02GPEREZRR=&team=T6HR0TUP3).
 
 ## monitoring-1
 
-[Docker Hub link](https://hub.docker.com/u/bergentroll).
+- Prometheus image has been appended to installation and tuned
+- Node, MongoDB and blackbox exporters tuned for Prometheus
+- Images has been pushed to [Docker Hub](https://hub.docker.com/u/bergentroll)

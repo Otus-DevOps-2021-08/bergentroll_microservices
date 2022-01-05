@@ -23,6 +23,11 @@ services:
       - '${APP_PORT}:9292/tcp'
     networks:
       - frontend
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: 'localhost:24224'
+        tag: service.ui
   post:
     <<: *defaults
     build: ../src/post-py/

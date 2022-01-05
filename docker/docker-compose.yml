@@ -21,7 +21,7 @@ services:
     networks:
       - frontend
   post:
-    build: ./../src/post-py/
+    build: ../src/post-py/
     image: '${USERNAME}/post:${APP_TAG}'
     restart: always
     networks:

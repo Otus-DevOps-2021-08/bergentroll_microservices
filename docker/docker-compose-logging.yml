@@ -4,6 +4,7 @@ version: '3'
 services:
   fluentd:
     image: ${USERNAME}/fluentd
+    build: ../logging/fluentd/
     ports:
       - "24224:24224"
       - "24224:24224/udp"

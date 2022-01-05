@@ -27,6 +27,11 @@ services:
     networks:
       - backend
       - frontend
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: 'localhost:24224'
+        tag: service.post
   comment:
     build:
       context: ../src/comment/

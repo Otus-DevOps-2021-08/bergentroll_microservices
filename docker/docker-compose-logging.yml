@@ -2,12 +2,9 @@
 
 version: '3'
 
-x-defaults: &defaults
-  restart: always
-
 services:
   fluentd:
-    <<: *defaults
+    restart: always
     image: ${USERNAME}/fluentd
     build: ../logging/fluentd/
     ports:
@@ -15,7 +12,7 @@ services:
       - "24224:24224/udp"
 
   elasticsearch:
-    <<: *defaults
+    restart: always
     image: elasticsearch:7.4.0
     environment:
       - ELASTIC_CLUSTER=false
@@ -28,12 +25,13 @@ services:
       - "9200:9200"
 
   kibana:
-    <<: *defaults
+    restart: always
     image: kibana:7.4.0
     ports:
       - "5601:5601"
 
   zipkin:
+    restart: always
     image: openzipkin/zipkin:2.21.0
     ports:
       - "9411:9411"

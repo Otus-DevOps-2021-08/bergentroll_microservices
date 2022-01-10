@@ -2,26 +2,18 @@
 
 version: '3.3'
 
-x-defaults: &defaults
-  restart: always
-
-x-defaults-environment: &defaults-environment
-  - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
-
 services:
   post_db:
-    <<: *defaults
-    environment:
-      *defaults-environment
+    restart: always
     image: mongo:3.2
     volumes:
       - post_db:/data/db
     networks:
       - backend
   ui:
-    <<: *defaults
+    restart: always
     environment:
-      *defaults-environment
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
     build:
       context: ../src/ui/
       dockerfile: Dockerfile.0
@@ -36,9 +28,9 @@ services:
         fluentd-address: 'localhost:24224'
         tag: service.ui
   post:
-    <<: *defaults
+    restart: always
     environment:
-      *defaults-environment
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
     build: ../src/post-py/
     image: '${USERNAME}/post:${APP_TAG}'
     networks:
@@ -50,9 +42,9 @@ services:
         fluentd-address: 'localhost:24224'
         tag: service.post
   comment:
-    <<: *defaults
+    restart: always
     environment:
-      *defaults-environment
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
     build:
       context: ../src/comment/
       dockerfile: Dockerfile.0
@@ -61,9 +53,7 @@ services:
       - backend
       - frontend
   prometheus:
-    <<: *defaults
-    environment:
-      *defaults-environment
+    restart: always
     image: '${USERNAME}/prometheus:latest'
     build: ../monitoring/prometheus/
     ports:
@@ -79,9 +69,7 @@ services:
       - frontend
       - monitoring
   node-exporter:
-    <<: *defaults
-    environment:
-      *defaults-environment
+    restart: always
     image: prom/node-exporter:v0.15.2
     user: root
     volumes:
@@ -95,18 +83,14 @@ services:
     networks:
       - monitoring
   mongodb-exporter:
-    <<: *defaults
-    environment:
-      *defaults-environment
+    restart: always
     image: percona/mongodb_exporter:0.30
     command:
       - '--mongodb.uri=mongodb://post_db:27017'
     networks:
       - backend
   blackbox-exporter:
-    <<: *defaults
-    environment:
-      *defaults-environment
+    restart: always
     image: 'prom/blackbox-exporter:v0.19.0'
     networks:
       - backend

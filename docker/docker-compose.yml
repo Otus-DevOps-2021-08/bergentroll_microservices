@@ -5,9 +5,14 @@ version: '3.3'
 x-defaults: &defaults
   restart: always
 
+x-defaults-environment: &defaults-environment
+  - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
+
 services:
   post_db:
     <<: *defaults
+    environment:
+      *defaults-environment
     image: mongo:3.2
     volumes:
       - post_db:/data/db
@@ -15,6 +20,8 @@ services:
       - backend
   ui:
     <<: *defaults
+    environment:
+      *defaults-environment
     build:
       context: ../src/ui/
       dockerfile: Dockerfile.0
@@ -30,6 +37,8 @@ services:
         tag: service.ui
   post:
     <<: *defaults
+    environment:
+      *defaults-environment
     build: ../src/post-py/
     image: '${USERNAME}/post:${APP_TAG}'
     networks:
@@ -42,6 +51,8 @@ services:
         tag: service.post
   comment:
     <<: *defaults
+    environment:
+      *defaults-environment
     build:
       context: ../src/comment/
       dockerfile: Dockerfile.0
@@ -51,6 +62,8 @@ services:
       - frontend
   prometheus:
     <<: *defaults
+    environment:
+      *defaults-environment
     image: '${USERNAME}/prometheus:latest'
     build: ../monitoring/prometheus/
     ports:
@@ -67,6 +80,8 @@ services:
       - monitoring
   node-exporter:
     <<: *defaults
+    environment:
+      *defaults-environment
     image: prom/node-exporter:v0.15.2
     user: root
     volumes:
@@ -81,6 +96,8 @@ services:
       - monitoring
   mongodb-exporter:
     <<: *defaults
+    environment:
+      *defaults-environment
     image: percona/mongodb_exporter:0.30
     command:
       - '--mongodb.uri=mongodb://post_db:27017'
@@ -88,6 +105,8 @@ services:
       - backend
   blackbox-exporter:
     <<: *defaults
+    environment:
+      *defaults-environment
     image: 'prom/blackbox-exporter:v0.19.0'
     networks:
       - backend

@@ -70,3 +70,9 @@ GitLab Runner is also setting up, but without registration.
 
 [Links to Slack channel with
 notifications](slack://channel?idC02GPEREZRR=&team=T6HR0TUP3).
+
+## monitoring-1
+
+- Prometheus image has been appended to installation and tuned
+- Node, MongoDB and blackbox exporters tuned for Prometheus
+- Images has been pushed to [Docker Hub](https://hub.docker.com/u/bergentroll)

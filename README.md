@@ -85,4 +85,5 @@ TODO for deployment:
 - k8s repo
 - pkgs: kubeadm, kubectl (for control node), kubelet
 - dockerd config (cgroups)
+- calico
 - kubeadm init, kubeadm join

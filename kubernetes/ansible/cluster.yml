@@ -1,0 +1,79 @@
+---
+
+- name: Install k8s
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - debug:
+        var: '{{ item }}'
+      tags: debug
+      with_items:
+        - inventory_hostname
+        - ansible_host
+        - ansible_default_ipv4
+    - name: Install basic requirements
+      package:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - docker.io
+        state: present
+        update_cache: true
+    - name: Tune dockerd
+      notify: Restart Docker
+      copy:
+        src: files/dockerd-daemon.json
+        dest: /etc/docker/daemon.json
+        mode: 644
+    - name: Add Google GPG key
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+    - name: Add k8s repo
+      apt_repository:
+        repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+        filename: kubernetes
+    - name: Install k8s packages
+      package:
+        name:
+          - kubelet
+          - kubeadm
+        state: present
+  handlers:
+    - name: Restart Docker
+      service:
+        name: docker
+        state: restarted
+
+- name: Setup master node
+  hosts: masters
+  become: true
+  gather_facts: false
+  tasks:
+    - debug:
+        var: '{{ item }}'
+      tags: debug
+      with_items:
+        - inventory_hostname
+        - ansible_host
+        - ansible_default_ipv4
+    - name: Install kubectl packages
+      package:
+        name: kubectl
+        state: present
+
+- name: Connect nodes
+  hosts: nodes
+  become: true
+  gather_facts: false
+  tasks:
+    - debug:
+        var: '{{ item }}'
+      tags: debug
+      with_items:
+        - inventory_hostname
+        - ansible_host
+        - ansible_default_ipv4

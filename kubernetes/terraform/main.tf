@@ -57,18 +57,6 @@ resource "yandex_compute_instance" "cluster" {
   }
 }
 
-resource "null_resource" "deploy" {
-  count = length(local.instance_ip_list)
-
-  connection {
-    type        = "ssh"
-    host        = local.instance_ip_list[count.index]
-    user        = "ubuntu"
-    agent       = false
-    private_key = file(var.private_key_path)
-  }
-}
-
 resource "local_file" "inventory_json" {
   content = "${jsonencode(
     {

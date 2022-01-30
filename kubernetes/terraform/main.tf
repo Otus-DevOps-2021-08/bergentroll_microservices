@@ -7,10 +7,13 @@ provider "yandex" {
 
 locals {
   instance_ip_list = yandex_compute_instance.cluster[*].network_interface[0].nat_ip_address
-  address_book = {
+  hosts = [
     for i in yandex_compute_instance.cluster :
-    i.name => i.network_interface[0].nat_ip_address
-  }
+    {
+      "name"    = i.name,
+      "address" = i.network_interface[0].nat_ip_address
+    }
+  ]
 }
 
 data "yandex_compute_image" "choosen" {
@@ -70,9 +73,13 @@ resource "local_file" "inventory_json" {
   content = "${jsonencode(
     {
       "cluster" = {
-        "hosts" = {
-          for host, ip in local.address_book :
-          host => { "ansible_host" : ip }
+        "masters" = {
+          for host in slice(local.hosts, 0, 1) :
+          host.name => { "ansible_host" : host.address }
+        },
+        "nodes" = {
+          for host in slice(local.hosts, 1, length(local.hosts)) :
+          host.name => { "ansible_host" : host.address }
         }
       },
     }

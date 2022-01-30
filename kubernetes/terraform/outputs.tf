@@ -1,6 +1,6 @@
-output "external_ip_addresses" {
-  description = "Assigned instance IPv4 address"
-  value       = local.address_book
+output "hosts" {
+  description = "Provisioned hosts"
+  value       = local.hosts
 }
 
 output "image_name" {

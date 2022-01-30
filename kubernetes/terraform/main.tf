@@ -77,5 +77,6 @@ resource "local_file" "inventory_json" {
       },
     }
   )}\n"
-  filename = "${var.inventory_output_dir}/inventory.json"
+  filename        = "${var.inventory_output_dir}/inventory.json"
+  file_permission = "644"
 }

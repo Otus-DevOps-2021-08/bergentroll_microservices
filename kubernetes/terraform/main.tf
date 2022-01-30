@@ -60,12 +60,14 @@ resource "yandex_compute_instance" "cluster" {
 resource "local_file" "inventory_json" {
   content = "${jsonencode(
     {
-      "cluster" = {
-        "masters" = {
+      "masters" = {
+        "hosts" = {
           for host in slice(local.hosts, 0, 1) :
           host.name => { "ansible_host" : host.address }
         },
-        "nodes" = {
+      },
+      "nodes" = {
+        "hosts" = {
           for host in slice(local.hosts, 1, length(local.hosts)) :
           host.name => { "ansible_host" : host.address }
         }

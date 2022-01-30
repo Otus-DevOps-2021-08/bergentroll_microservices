@@ -4,42 +4,58 @@ version: '3.3'
 
 services:
   post_db:
-    image: mongo:3.2
     restart: always
+    image: mongo:3.2
     volumes:
       - post_db:/data/db
     networks:
       - backend
   ui:
+    restart: always
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
     build:
       context: ../src/ui/
       dockerfile: Dockerfile.0
     image: '${USERNAME}/ui:${APP_TAG}'
-    restart: always
     ports:
       - '${APP_PORT}:9292/tcp'
     networks:
       - frontend
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: 'localhost:24224'
+        tag: service.ui
   post:
+    restart: always
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
     build: ../src/post-py/
     image: '${USERNAME}/post:${APP_TAG}'
-    restart: always
     networks:
       - backend
       - frontend
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: 'localhost:24224'
+        tag: service.post
   comment:
+    restart: always
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
     build:
       context: ../src/comment/
       dockerfile: Dockerfile.0
     image: '${USERNAME}/comment:${APP_TAG}'
-    restart: always
     networks:
       - backend
       - frontend
   prometheus:
+    restart: always
     image: '${USERNAME}/prometheus:latest'
     build: ../monitoring/prometheus/
-    restart: always
     ports:
       - '9090:9090'
     volumes:
@@ -53,9 +69,9 @@ services:
       - frontend
       - monitoring
   node-exporter:
+    restart: always
     image: prom/node-exporter:v0.15.2
     user: root
-    restart: always
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
@@ -67,15 +83,15 @@ services:
     networks:
       - monitoring
   mongodb-exporter:
-    image: percona/mongodb_exporter:0.30
     restart: always
+    image: percona/mongodb_exporter:0.30
     command:
       - '--mongodb.uri=mongodb://post_db:27017'
     networks:
       - backend
   blackbox-exporter:
-    image: 'prom/blackbox-exporter:v0.19.0'
     restart: always
+    image: 'prom/blackbox-exporter:v0.19.0'
     networks:
       - backend
       - frontend

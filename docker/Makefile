@@ -1,4 +1,6 @@
 define build_image
+echo `git show --format="%h" HEAD | head -1` > $(dir $<)/build_info.txt
+echo `git rev-parse --abbrev-ref HEAD` >> $(dir $<)/build_info.txt
 docker build $(dir $<) --tag $(username)/$@:$(tag)
 endef
 

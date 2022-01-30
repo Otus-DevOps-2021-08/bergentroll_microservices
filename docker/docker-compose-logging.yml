@@ -1,0 +1,44 @@
+---
+
+version: '3'
+
+services:
+  fluentd:
+    restart: always
+    image: ${USERNAME}/fluentd
+    build: ../logging/fluentd/
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+
+  elasticsearch:
+    restart: always
+    image: elasticsearch:7.4.0
+    environment:
+      - ELASTIC_CLUSTER=false
+      - CLUSTER_NODE_MASTER=true
+      - CLUSTER_MASTER_NODE_NAME=es01
+      - discovery.type=single-node
+    expose:
+      - 9200
+    ports:
+      - "9200:9200"
+
+  kibana:
+    restart: always
+    image: kibana:7.4.0
+    ports:
+      - "5601:5601"
+
+  zipkin:
+    restart: always
+    image: openzipkin/zipkin:2.21.0
+    ports:
+      - "9411:9411"
+    networks:
+      - frontend
+      - backend
+
+networks:
+  frontend: {}
+  backend: {}

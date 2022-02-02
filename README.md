@@ -77,3 +77,13 @@ notifications](slack://channel?idC02GPEREZRR=&team=T6HR0TUP3).
 - Node, MongoDB and blackbox exporters tuned for Prometheus
 - Images has been pushed to [Docker Hub](https://hub.docker.com/u/bergentroll)
 - Found `sleep` call into the broken post service. :smile:
+
+## kubernetes-1
+
+TODO for deployment:
+- docker.io
+- k8s repo
+- pkgs: kubeadm, kubectl (for control node), kubelet
+- dockerd config (cgroups)
+- calico
+- kubeadm init, kubeadm join

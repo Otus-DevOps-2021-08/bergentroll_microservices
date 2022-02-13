@@ -7,7 +7,7 @@ metadata:
   labels:
     app: reddit
     component: mongo
-    comment-db: 'true'
+    comment-db: "true"
 spec:
   ports:
   - port: 27017
@@ -16,4 +16,4 @@ spec:
   selector:
     app: reddit
     component: mongo
-    comment-db: 'true'
+    comment-db: "true"

@@ -25,3 +25,31 @@ resource "yandex_kubernetes_cluster" "cluster" {
     zonal { zone = var.zone }
   }
 }
+
+resource "yandex_kubernetes_node_group" "node_group" {
+  name       = "dev"
+  cluster_id = yandex_kubernetes_cluster.cluster.id
+
+  instance_template {
+    resources {
+      memory        = var.node_memory
+      cores         = var.node_cores_num
+      core_fraction = var.node_core_fraction
+    }
+
+    scheduling_policy {
+      preemptible = var.node_preemptible
+    }
+
+    boot_disk {
+      size = var.node_disk_size
+      type = "network-ssd"
+    }
+  }
+
+  scale_policy {
+    fixed_scale {
+      size = var.node_group_size
+    }
+  }
+}

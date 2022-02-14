@@ -12,6 +12,8 @@ variable "k8s_version" { default = "1.19" }
 
 variable "network" { default = "default" }
 
+variable "subnet_cidr" { default = "10.1.0.0/16" }
+
 variable "node_group_size" { default = 2 }
 
 variable "node_cores_num" {

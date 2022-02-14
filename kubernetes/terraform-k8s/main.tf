@@ -18,12 +18,19 @@ resource "yandex_kubernetes_cluster" "cluster" {
   service_account_id      = data.yandex_iam_service_account.choosen.id
   node_service_account_id = data.yandex_iam_service_account.choosen.id
   network_id              = data.yandex_vpc_network.choosen.id
+  network_policy_provider = "CALICO"
 
   master {
     version   = var.k8s_version
     public_ip = true
     zonal { zone = var.zone }
   }
+}
+
+resource "yandex_vpc_subnet" "choosen" {
+  network_id     = data.yandex_vpc_network.choosen.id
+  zone           = var.zone
+  v4_cidr_blocks = [var.subnet_cidr]
 }
 
 resource "yandex_kubernetes_node_group" "node_group" {
@@ -44,6 +51,11 @@ resource "yandex_kubernetes_node_group" "node_group" {
     boot_disk {
       size = var.node_disk_size
       type = "network-ssd"
+    }
+
+    network_interface {
+      nat        = true
+      subnet_ids = ["${yandex_vpc_subnet.choosen.id}"]
     }
   }
 

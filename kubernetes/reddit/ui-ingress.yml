@@ -1,14 +1,21 @@
 ---
 
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ui
   annotations:
     kubernetes.io/ingress.allow-http: "false"
 spec:
+  ingressClassName: nginx
   tls:
-    - secretName: ui-ingress-secret
-  backend:
-    serviceName: ui
-    servicePort: 9292
+    - secretName: ui-ingress-secret  # Takes no effect here =)
+  rules:
+    - http:
+        paths:
+          - path: '/'
+            pathType: Prefix
+            backend:
+              service:
+                name: ui
+                port: { number: 9292 }

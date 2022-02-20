@@ -3,19 +3,16 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ui
-  annotations:
-    kubernetes.io/ingress.allow-http: "false"
+  name: "{{ .Release.Name }}-{{ .Chart.Name }}"
 spec:
   ingressClassName: nginx
-  tls:
-    - secretName: ui-ingress-secret  # Takes no effect here =)
   rules:
     - http:
         paths:
-          - path: '/'
+          - path: "/"
             pathType: Prefix
             backend:
               service:
-                name: ui
-                port: { number: 9292 }
+                name: "{{ .Release.Name }}-{{ .Chart.Name }}"
+                port: 
+                  number: {{ .Values.service.externalPort }}

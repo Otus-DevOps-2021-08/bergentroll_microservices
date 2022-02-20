@@ -34,3 +34,5 @@ spec:
         - name: mongo-persistent-storage
           persistentVolumeClaim:
             claimName: mongo-pvc
+
+# vi: syntax=yaml OLOLO name: mongo-gce-pd-storage

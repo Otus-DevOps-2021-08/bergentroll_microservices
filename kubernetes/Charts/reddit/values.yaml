@@ -23,6 +23,4 @@ ui:
 
 mongodb:
   auth:
-    enabled: "false"
-    rootUser: ""
-    rootPassword: ""
+    enabled: false

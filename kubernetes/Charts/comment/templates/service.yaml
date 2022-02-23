@@ -11,7 +11,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-   - port: {{ .Values.service.externalPort }}
+    - port: {{ .Values.service.externalPort }}
       protocol: TCP
       targetPort: {{ .Values.service.internalPort }}
   selector:

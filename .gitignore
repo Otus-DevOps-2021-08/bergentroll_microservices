@@ -7,3 +7,5 @@ inventory.json
 key.json
 variables.json
 build_info.txt
+*.lock
+/kubernetes/Charts/reddit/charts/

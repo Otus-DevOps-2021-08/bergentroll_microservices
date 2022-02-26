@@ -36,7 +36,7 @@ global:
     labels: {}
 
   ## https://docs.gitlab.com/charts/installation/deployment#deploy-the-community-edition
-  edition: ee
+  edition: ce
 
   ## https://docs.gitlab.com/charts/charts/globals#gitlab-version
   # gitlabVersion:
@@ -48,7 +48,7 @@ global:
     allowClusterRoles: true
   ## https://docs.gitlab.com/charts/charts/globals#configure-host-settings
   hosts:
-    domain: example.com
+    domain: grotten.ru
     hostSuffix:
     https: false
     externalIP:
@@ -705,7 +705,7 @@ upgradeCheck:
 certmanager-issuer:
   # The email address to register certificates requested from Let's Encrypt.
   # Required if using Let's Encrypt.
-  email: email@example.com
+  email: z7vvb0vl@privacyrequired.com
 
 ## Installation & configuration of jetstack/cert-manager
 ## See requirements.yaml for current version

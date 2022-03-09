@@ -80,10 +80,16 @@ notifications](slack://channel?idC02GPEREZRR=&team=T6HR0TUP3).
 
 ## kubernetes-1
 
-TODO for deployment:
-- docker.io
-- k8s repo
-- pkgs: kubeadm, kubectl (for control node), kubelet
-- dockerd config (cgroups)
-- calico
-- kubeadm init, kubeadm join
+DONE ([PR8](pull/8))
+
+## kubernetes-2
+
+DONE ([PR8](pull/9))
+
+## kubernetes-3
+
+DONE ([PR8](pull/10))
+
+## kubernetes-4
+
+IN PROGRESS ([PR8](pull/11))

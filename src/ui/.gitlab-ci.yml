@@ -1,0 +1,130 @@
+---
+
+image: alpine:latest
+
+variables:
+  CI_REGISTRY: "index.docker.io"
+  CI_APPLICATION_REPOSITORY: $CI_REGISTRY/$CI_PROJECT_PATH
+  CI_APPLICATION_TAG: $CI_COMMIT_REF_SLUG
+  CI_CONTAINER_NAME: ci_job_build_${CI_JOB_ID}
+
+stages:
+  - build
+  - test
+  - review
+  - release
+  - cleanup
+
+build:
+  stage: build
+  image: docker:git
+  services:
+    - docker:18.09.7-dind
+  before_script:
+     - !reference [.setup_docker]
+  script:
+     - echo `git show --format="%h" HEAD | head -1` > build_info.txt
+     - echo `git rev-parse --abbrev-ref HEAD` >> build_info.txt
+     - docker build -t "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" .
+     - |
+       if [[ -n "$CI_REGISTRY_USER" ]]; then
+         docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
+       fi
+     - docker push "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
+
+  variables:
+    DOCKER_DRIVER: overlay2
+  only:
+    - branches
+
+test:
+  stage: test
+  script:
+    - echo 'K8s is active'
+  only:
+    refs:
+      - branches
+    kubernetes: active
+
+release:
+  stage: release
+  image: docker
+  services:
+    - docker:18.09.7-dind
+  before_script:
+    - !reference [.setup_docker]
+  script:
+    - if [[ -n "$CI_REGISTRY_USER" ]]; then docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"; fi
+    - docker pull "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
+    - docker tag "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" "$CI_APPLICATION_REPOSITORY:$(cat VERSION)"
+    - docker push "$CI_APPLICATION_REPOSITORY:$(cat VERSION)"
+  after_script:
+    - >
+      wget -O -
+      --post-data "token=${REDDIT_DEPLOY_TRIGGER_TOKEN}&ref=main"
+      "https://${CI_SERVER_HOST}/api/v4/projects/2/trigger/pipeline"
+      
+  only:
+    - main
+
+review:
+  stage: review
+  image:
+    name: dtzar/helm-kubectl:3.8.0  # TODO Rebuild
+  script:
+    - kubectl describe namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
+    - track="${1-stable}"
+    - name="$CI_ENVIRONMENT_SLUG"
+    - if [[ "$track" != "stable" ]]; then name="$name-$track"; fi
+    - git clone https://$CI_SERVER_HOST/$CI_PROJECT_NAMESPACE/reddit-deploy.git
+    - helm dep update reddit-deploy/reddit
+    - >
+      helm upgrade --install
+      --wait
+      --set ui.ingress.host="$HOST"
+      --set ui.ingress.class='gitlab-nginx'
+      --set "$CI_PROJECT_NAME.image.tag=$CI_APPLICATION_TAG"
+      --namespace="$KUBE_NAMESPACE"
+      --version="$CI_PIPELINE_ID-$CI_JOB_ID"
+      "$name"
+      reddit-deploy/reddit/
+  variables:
+    KUBE_NAMESPACE: default  # In other NS ingress fails to get an IPv4 addr
+    HOST: "$CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG.$CI_SERVER_HOST"
+  environment:
+    name: review/$CI_PROJECT_PATH/$CI_COMMIT_REF_NAME
+    url: http://$HOST
+    on_stop: stop_review
+  only:
+    refs:
+      - branches
+  except:
+    - main
+
+stop_review:
+  image:
+    name: dtzar/helm-kubectl:3.8.0  # TODO Rebuild
+  stage: cleanup
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - helm delete "$CI_ENVIRONMENT_SLUG" --purge || true
+  environment:
+    name: review/$CI_PROJECT_PATH/$CI_COMMIT_REF_NAME
+    action: stop
+  when: manual
+  allow_failure: true
+  only:
+    refs:
+      - branches
+  except:
+    - master
+
+.setup_docker: |
+   if ! docker info &>/dev/null; then
+     if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
+       export DOCKER_HOST='tcp://localhost:2375'
+     fi
+   fi
+
+...

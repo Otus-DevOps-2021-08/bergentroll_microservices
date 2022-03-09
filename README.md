@@ -92,4 +92,4 @@ DONE ([PR8](pull/10))
 
 ## kubernetes-4
 
-IN PROGRESS ([PR8](pull/11))
+DONE ([PR8](pull/11))

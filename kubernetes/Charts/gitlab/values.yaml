@@ -402,10 +402,10 @@ global:
       ## See documentation for complete example of a configured LDAP server
 
     ## https://docs.gitlab.com/charts/charts/globals#kas-settings
-    gitlab_kas: {}
+    gitlab_kas:
       # secret:
       # key:
-      # enabled:
+      enabled: true
       # externalUrl:
       # internalUrl:
 
@@ -484,7 +484,7 @@ global:
 
   ## https://docs.gitlab.com/charts/charts/gitlab/kas/
   kas:
-    enabled: false
+    enabled: true
     service:
       apiExternalPort: 8153 # port for connections from the GitLab backend
 

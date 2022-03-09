@@ -1,0 +1,74 @@
+---
+
+image: alpine:latest
+
+variables:
+  CI_REGISTRY: index.docker.io
+  CI_APPLICATION_REPOSITORY: "$CI_REGISTRY/$CI_PROJECT_PATH"
+  CI_APPLICATION_TAG: "$CI_COMMIT_REF_SLUG"
+  CI_CONTAINER_NAME: "ci_job_build_${CI_JOB_ID}"
+
+stages:
+  - test
+  - staging
+  - production
+
+test:
+  stage: test
+  script:
+    - exit 0
+  only:
+    - triggers
+    - branches
+
+staging:
+  stage: staging
+  image:  # TODO Rebuild
+    name: dtzar/helm-kubectl:3.8.0
+  script:
+    - kubectl describe namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
+    - !reference [.deploy]
+  variables:
+    KUBE_NAMESPACE: default  # FIXME: failt to set ingress in other NS
+  environment:
+    name: staging
+    url: http://$CI_ENVIRONMENT_SLUG.$CI_SERVER_HOST
+  only:
+    refs:
+      - main
+
+production:
+  stage: production
+  image:  # TODO Rebuild
+    name: dtzar/helm-kubectl:3.8.0
+  script:
+    - kubectl describe namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
+    - !reference [.deploy]
+  variables:
+    KUBE_NAMESPACE: default  # FIXME: failt to set ingress in other NS
+  environment:
+    name: production
+    url: http://$CI_ENVIRONMENT_SLUG.$CI_SERVER_HOST
+  when: manual
+  only:
+    refs:
+      - main
+
+.deploy: |
+  echo $KUBE_NAMESPACE
+  helm repo add bitnami https://charts.bitnami.com/bitnami
+  helm dep build reddit
+
+  helm upgrade --install \
+    --wait \
+    --set ui.ingress.host="$CI_ENVIRONMENT_SLUG.$CI_SERVER_HOST" \
+    --set ui.ingress.class='gitlab-nginx' \
+    --set ui.image.tag="$(curl https://$CI_SERVER_HOST/$CI_PROJECT_NAMESPACE/ui/raw/main/VERSION)" \
+    --set post.image.tag="$(curl https://$CI_SERVER_HOST/$CI_PROJECT_NAMESPACE/post/raw/main/VERSION)" \
+    --set comment.image.tag="$(curl https://$CI_SERVER_HOST/$CI_PROJECT_NAMESPACE/comment/raw/main/VERSION)" \
+    --namespace="$KUBE_NAMESPACE" \
+    --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
+    "$CI_ENVIRONMENT_SLUG" \
+    reddit
+
+...
